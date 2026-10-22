@@ -53,3 +53,23 @@ test('stock se descuenta al confirmar y no antes', async () => {
   await send('finalizar'); await send('retiro'); await send('confirmar');
   assert.equal((await store.listProducts())[0].stock, before - 3);
 });
+
+test('menú, pedido y estado no consumen llamadas al LLM', async () => {
+  const store = createDemoStore();
+  let calls = 0;
+  const send = text => handleMessage({ senderId: 'cliente-1', text, store, ai: async () => { calls++; return 'respuesta'; } });
+  await send('menú'); await send('pedir'); await send('1'); await send('1');
+  await send('finalizar'); await send('retiro'); await send('confirmar');
+  await send('estado DEMO-1001');
+  assert.equal(calls, 0);
+});
+
+test('datos de ejemplo cumplen reglas mínimas de calidad', async () => {
+  const store = createDemoStore();
+  const products = await store.listProducts();
+  const knowledge = await store.listKnowledge();
+  assert.equal(new Set(products.map(p => p.id)).size, products.length);
+  assert.equal(new Set(knowledge.map(k => k.title)).size, knowledge.length);
+  assert.ok(products.every(p => p.name && p.price > 0 && p.stock >= 0 && p.ingredients && p.allergens));
+  assert.ok(knowledge.every(k => k.title && k.content));
+});

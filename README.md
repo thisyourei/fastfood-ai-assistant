@@ -16,6 +16,8 @@ Abre `http://localhost:8787`. Para ejecutar las pruebas:
 node --test
 ```
 
+GitHub Actions ejecuta las mismas pruebas en cada cambio. Además del flujo de pedido, comprueban calidad básica de los datos y que menú, compra y seguimiento no consuman llamadas al LLM.
+
 Flujo sugerido: `pedir` → `2` → `2` → `finalizar` → `delivery` → `Providencia` → `Calle Demo 123` → `confirmar` → `estado DEMO-1001`.
 
 ## Arquitectura
