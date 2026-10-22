@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#171a16">
+  <title>Pedido Rápido · Demo IA</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar"><span class="brandmark">🍔</span><div><strong>Pedido Rápido</strong><small>Demo de atención y pedidos con IA</small></div><span class="badge">DEMO</span></header>
+    <section class="intro"><p class="eyebrow">Asistente para comida rápida</p><h1>Del mensaje al pedido, con datos confiables.</h1><p>Prueba el mismo flujo que luego conectaremos a WhatsApp. Los productos, precios y pedidos son ficticios; no se realizan cobros ni entregas.</p></section>
+    <section class="workspace" aria-label="Demostración interactiva">
+      <div class="panel info"><h2>Qué puedes probar</h2><button class="prompt" data-message="menú">Ver el menú <span>→</span></button><button class="prompt" data-message="pedir">Hacer un pedido <span>→</span></button><button class="prompt" data-message="¿Cuál es el horario?">Consultar el horario <span>→</span></button><button class="prompt" data-message="¿Tienen delivery en Providencia?">Preguntar por delivery <span>→</span></button><div class="note"><strong>Cómo funciona</strong><p>Precios y estados salen de datos estructurados. Las preguntas abiertas se responden usando documentos del negocio como fuente.</p></div></div>
+      <div class="panel chat"><div class="chat-head"><span class="avatar">🍔</span><div><strong>Asistente del local</strong><small>Prueba web · mismo motor de WhatsApp</small></div></div><div id="messages" class="messages" role="log" aria-live="polite"></div><form id="chat-form"><label class="sr-only" for="message">Escribe tu mensaje</label><input id="message" maxlength="500" autocomplete="off" placeholder="Escribe un mensaje…" required><button type="submit" aria-label="Enviar">Enviar</button></form></div>
+    </section>
+    <footer>Proyecto de portafolio · Flujo de pedidos y atención al cliente · Sin pagos reales</footer>
+  </main>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>
