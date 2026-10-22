@@ -9,6 +9,12 @@ function storeFor(env) {
   return env.DEMO_MODE === 'true' ? (env.DEMO_STORE ?? localStore) : createSupabaseStore(env);
 }
 
+function webDemoAvailable(env) {
+  if (env.DEMO_MODE === 'true') return true;
+  const expiresAt = Date.parse(env.PUBLIC_DEMO_UNTIL ?? '');
+  return env.DEMO_ENABLED === 'true' && Number.isFinite(expiresAt) && Date.now() < expiresAt;
+}
+
 function aiFor(env) {
   if (!env.AI) return null;
   return async (question, sources) => {
@@ -66,16 +72,16 @@ export default {
     const url = new URL(request.url);
     if (url.pathname === '/api/health') return json({ ok: true, mode: env.DEMO_MODE === 'true' ? 'local-demo' : 'supabase' });
     if (url.pathname === '/api/menu' && request.method === 'GET') {
-      if (env.DEMO_ENABLED !== 'true') return json({ error: 'Demo web desactivada' }, 403);
+      if (!webDemoAvailable(env)) return json({ error: 'La prueba pública terminó.' }, 403);
       return json({ products: await storeFor(env).listProducts() });
     }
     if (url.pathname === '/api/chat' && request.method === 'POST') {
-      if (env.DEMO_ENABLED !== 'true') return json({ error: 'Demo web desactivada' }, 403);
+      if (!webDemoAvailable(env)) return json({ error: 'La prueba pública terminó.' }, 403);
       let data;
       try { data = await request.json(); } catch { return json({ error: 'JSON inválido' }, 400); }
       if (typeof data.sessionId !== 'string' || !/^[a-zA-Z0-9_-]{8,80}$/.test(data.sessionId) || typeof data.message !== 'string' || data.message.length > 500) return json({ error: 'Mensaje o sesión inválidos' }, 400);
       try {
-        const reply = await handleMessage({ senderId: `web:${data.sessionId}`, text: data.message, store: storeFor(env), ai: aiFor(env) });
+        const reply = await handleMessage({ senderId: `web:${data.sessionId}`, text: data.message, store: storeFor(env) });
         return json({ reply });
       } catch (error) {
         console.error('Chat error', error);
