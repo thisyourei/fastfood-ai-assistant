@@ -36,14 +36,14 @@ Web de prueba ──────────────────────
 
 ## Crear Supabase
 
-1. Crea un proyecto en [Supabase](https://supabase.com/) y ejecuta `supabase/schema.sql` en SQL Editor.
-2. Copia `Project URL` y la **service role key**. La clave se configura únicamente como secreto del Worker; nunca se envía al navegador ni se sube a GitHub.
-3. El SQL activa Row Level Security. El Worker usa la service role key y es el único acceso a estas tablas.
+1. Crea un proyecto en [Supabase](https://supabase.com/) con Data API habilitada, **Automatically expose new tables** desactivado y RLS automático habilitado. Ejecuta `supabase/schema.sql` en SQL Editor.
+2. Copia `Project URL` y crea una **secret key** (`sb_secret_...`) para el Worker. Configúrala únicamente como secreto del Worker; nunca la envíes al navegador ni la subas a GitHub.
+3. El SQL habilita RLS y concede acceso a estas tablas y funciones solo a `service_role`. El Worker usa la secret key; el adaptador la envía únicamente en el encabezado `apikey`.
 
 ## Publicar en Cloudflare
 
 1. Crea una cuenta en [Cloudflare](https://dash.cloudflare.com/) e instala Wrangler en tu entorno (`pnpm dlx wrangler`, o la instalación oficial de Cloudflare).
-2. Configura los secretos con `wrangler secret put SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `META_VERIFY_TOKEN`, `META_APP_SECRET`, `WHATSAPP_TOKEN` y `WHATSAPP_PHONE_NUMBER_ID`.
+2. Configura los secretos con `wrangler secret put SUPABASE_URL`, `SUPABASE_SECRET_KEY`, `META_VERIFY_TOKEN`, `META_APP_SECRET`, `WHATSAPP_TOKEN` y `WHATSAPP_PHONE_NUMBER_ID`.
 3. Ejecuta `wrangler deploy` desde este directorio. La configuración de `wrangler.jsonc` activa Workers AI y publica los archivos de `public/`.
 4. Deja `DEMO_ENABLED=false` mientras el Worker sea accesible públicamente. Para presentar la web en un entorno controlado, cámbialo temporalmente a `true`. La web local siempre está habilitada.
 

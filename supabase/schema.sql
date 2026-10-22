@@ -60,6 +60,14 @@ alter table public.orders enable row level security;
 alter table public.order_items enable row level security;
 alter table public.inbound_messages enable row level security;
 
+-- La API solo admite llamadas del Worker mediante la clave secreta.
+revoke all on table public.products, public.knowledge, public.sessions,
+  public.orders, public.order_items, public.inbound_messages from public, anon, authenticated;
+grant all on table public.products, public.knowledge, public.sessions,
+  public.orders, public.order_items, public.inbound_messages to service_role;
+revoke all on sequence public.demo_order_code_seq from public, anon, authenticated;
+grant usage on sequence public.demo_order_code_seq to service_role;
+
 create or replace function public.claim_inbound_message(p_message_id text)
 returns boolean language plpgsql security invoker set search_path = public as $$
 begin
@@ -67,6 +75,9 @@ begin
   return found;
 end;
 $$;
+
+revoke all on function public.claim_inbound_message(text) from public, anon, authenticated;
+grant execute on function public.claim_inbound_message(text) to service_role;
 
 create or replace function public.place_demo_order(
   p_customer_ref text,
@@ -116,6 +127,9 @@ begin
   return jsonb_build_object('code', v_code, 'status', 'recibido', 'total', v_subtotal + v_fee, 'fulfillment', p_fulfillment);
 end;
 $$;
+
+revoke all on function public.place_demo_order(text, jsonb, text, text, text) from public, anon, authenticated;
+grant execute on function public.place_demo_order(text, jsonb, text, text, text) to service_role;
 
 insert into public.products(id, name, price, ingredients, allergens, stock, active) values
   (1, 'Hamburguesa clásica', 5900, 'pan, carne, lechuga, tomate y salsa de la casa', 'gluten', 25, true),

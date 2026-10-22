@@ -1,13 +1,12 @@
 function client(env) {
   const base = env.SUPABASE_URL?.replace(/\/$/, '');
-  const key = env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!base || !key) throw new Error('Faltan SUPABASE_URL y SUPABASE_SERVICE_ROLE_KEY');
+  const key = env.SUPABASE_SECRET_KEY;
+  if (!base || !key) throw new Error('Faltan SUPABASE_URL y SUPABASE_SECRET_KEY');
   return async (path, options = {}) => {
     const response = await fetch(`${base}/rest/v1/${path}`, {
       ...options,
       headers: {
         apikey: key,
-        Authorization: `Bearer ${key}`,
         'Content-Type': 'application/json',
         Accept: 'application/json',
         ...options.headers
