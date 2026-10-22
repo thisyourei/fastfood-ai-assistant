@@ -38,7 +38,7 @@ async function verifySignature(raw, signature, secret) {
 
 async function sendWhatsApp(env, to, body) {
   if (!env.WHATSAPP_TOKEN || !env.WHATSAPP_PHONE_NUMBER_ID) throw new Error('Faltan credenciales de WhatsApp');
-  const version = env.WHATSAPP_API_VERSION || 'v23.0';
+  const version = env.WHATSAPP_API_VERSION || 'v25.0';
   const response = await fetch(`https://graph.facebook.com/${version}/${env.WHATSAPP_PHONE_NUMBER_ID}/messages`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${env.WHATSAPP_TOKEN}`, 'Content-Type': 'application/json' },

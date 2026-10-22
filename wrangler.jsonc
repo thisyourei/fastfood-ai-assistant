@@ -10,6 +10,6 @@
   "ai": { "binding": "AI" },
   "vars": {
     "DEMO_ENABLED": "false",
-    "WHATSAPP_API_VERSION": "v23.0"
+    "WHATSAPP_API_VERSION": "v25.0"
   }
 }
